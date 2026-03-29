@@ -13,8 +13,8 @@ RUN ./node_modules/.bin/vite build
 
 # Stage 2: Production
 FROM nginx:alpine
-
-COPY --from=build /app/dist /usr/share/nginx/html
+# Copy pre-built dist from Jenkins workspace
+COPY dist/ /usr/share/nginx/html
 
 EXPOSE 80
 
