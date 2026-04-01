@@ -19,19 +19,18 @@ As a DevOps Engineer, I designed and implemented the CI/CD pipeline for this pro
 ---
 
 
+
 ## 📑 Table of Contents
 
 - [About the Project](#about-the-project)
 - [Features](#features)
 - [Screenshots](#screenshots)
+- [Slack Notification Integration](#slack-notification-integration)
 - [Getting Started](#getting-started)
 - [Docker Integration](#docker-integration)
 - [Automating Jenkins Pipeline with Webhooks](#automating-jenkins-pipeline-with-webhooks)
 - [Jenkins CI/CD Pipeline](#jenkins-cicd-pipeline)
-- [Testing](#testing)
-- [Contributing](#contributing)
 - [Author](#author)
-- [License](#license)
 
 ---
 
@@ -55,11 +54,32 @@ This project demonstrates a full-stack workflow for modern web development, incl
 
 ---
 
+
 ## Screenshots
 
 ### Jenkins CI/CD Pipeline
 
 ![Jenkins Pipeline](src/assets/images/jenkins-pipeline.png)
+
+
+---
+
+## Slack Notification Integration
+
+This project integrates Slack notifications into the Jenkins CI/CD pipeline. After each build, Jenkins sends a message to a designated Slack channel to inform the team of the build status (success or failure).
+
+**How it works:**
+
+- The Jenkins pipeline uses the `slackSend` step to post messages to Slack.
+- Notifications are sent to the `#nodejs-pipline` channel.
+- Success and failure messages are color-coded (green for success, red for failure) and include the job name, build number, and a link to the build.
+
+
+**Slack screenshot:**
+
+The following image shows a sample Slack notification sent by Jenkins:
+
+![Slack Notification](src/assets/images/slack.png)
 
 ---
 

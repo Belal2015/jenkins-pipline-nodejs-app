@@ -32,7 +32,6 @@ pipeline {
 
         stage('Docker Build') {
             steps {
-                // --no-cache ensures fresh build every time
                 sh "docker build --no-cache -t ${IMAGE_TAG} ."
             }
         }
@@ -63,46 +62,45 @@ pipeline {
             }
         }
 
-       stage('Cleanup') {
-    steps {
-        sh """
-            echo "🧹 Starting cleanup..."
+        stage('Cleanup') {                              
+            steps {
+                sh """
+                    echo "🧹 Starting cleanup..."
 
-            # Remove current build image
-            docker rmi ${IMAGE_TAG} || true
+                    docker rmi ${IMAGE_TAG} || true
+                    docker image prune -f || true
+                    docker builder prune --filter "until=24h" -f || true
 
-            # Remove dangling/untagged images only (safe)
-            docker image prune -f || true
+                    echo "📊 Docker disk usage after cleanup:"
+                    docker system df
 
-            # Remove build cache older than 24h to save disk space
-            docker builder prune --filter "until=24h" -f || true
+                    echo "✅ Cleanup complete!"
+                """
+            }
+        }                                              
 
-            echo "📊 Docker disk usage after cleanup:"
-            docker system df
+    }                                                   // ✅ end of stages
 
-            echo "✅ Cleanup complete!"
-        """
-    }
-}
-
+   
     post {
-     success {
+        success {
             slackSend(
-                channel: '#ci-cd',
+                channel: '#nodejs-pipline',
                 color: 'good',
-                message: "✅ Build SUCCESS: ${env.JOB_NAME} #${env.BUILD_NUMBER}"
+                message: "✅ Build SUCCESS: ${env.JOB_NAME} #${env.BUILD_NUMBER} - ${env.BUILD_URL}"
             )
         }
         failure {
             slackSend(
-                channel: '#ci-cd',
+                channel: '#nodejs-pipline',
                 color: 'danger',
                 message: "❌ Build FAILED: ${env.JOB_NAME} #${env.BUILD_NUMBER} - ${env.BUILD_URL}"
             )
         }
-            // ✅ Fixed: Vite outputs to dist/ not build/
+        always {                                     
             archiveArtifacts artifacts: 'dist/**', allowEmptyArchive: true
             cleanWs()
         }
     }
+
 }
